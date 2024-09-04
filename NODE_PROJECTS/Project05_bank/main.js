@@ -42,79 +42,81 @@ for (let index = 1; index <= 3; index++) {
 }
 // bank functionality
 async function bankService(bank) {
-    let service = await inquirer.prompt({
-        type: "list",
-        name: "select",
-        message: "please select the service",
-        choices: ["View Balance", "Cash Withdraw", "Cash Deposit"],
-    });
-    // view balance
-    if (service.select == "View Balance") {
-        let res = await inquirer.prompt({
-            type: "input",
-            name: "num",
-            message: "Please enter your account number",
+    do {
+        let service = await inquirer.prompt({
+            type: "list",
+            name: "select",
+            message: "please select the service",
+            choices: ["View Balance", "Cash Withdraw", "Cash Deposit"],
         });
-        let account = myBank.account.find((acc) => acc.accNumber == res.num);
-        if (!account) {
-            console.log(chalk.red.bold.italic("Invalid Account Number"));
-        }
-        if (account) {
-            let name = myBank.customer.find((item) => item.accNumber == account.accNumber);
-            console.log("Dear", chalk.green.italic(name?.firstName, name?.lastName), "your account balance is " +
-                " " +
-                chalk.bold.blueBright("$", account.balance));
-        }
-    }
-    // Cash Withdraw
-    if (service.select == "Cash Withdraw") {
-        let res = await inquirer.prompt({
-            type: "input",
-            name: "num",
-            message: "Please enter your account number",
-        });
-        let account = myBank.account.find((acc) => acc.accNumber == res.num);
-        if (!account) {
-            console.log(chalk.red.bold.italic("Invalid Account Number"));
-        }
-        if (account) {
-            let ans = await inquirer.prompt({
-                type: "number",
-                message: "please enter your CASH",
-                name: "rupee",
+        // view balance
+        if (service.select == "View Balance") {
+            let res = await inquirer.prompt({
+                type: "input",
+                name: "num",
+                message: "Please enter your account number",
             });
-            if (ans.rupee > account.balance) {
-                console.log(chalk.red.bold.italic("mojoda balance naakafi hai"));
-                return;
+            let account = myBank.account.find((acc) => acc.accNumber == res.num);
+            if (!account) {
+                console.log(chalk.red.bold.italic("Invalid Account Number"));
             }
-            let newBalance = account.balance - ans.rupee;
-            // transcation method
-            bank.transcation({ accNumber: account.accNumber, balance: newBalance });
-            console.log(newBalance);
+            if (account) {
+                let name = myBank.customer.find((item) => item.accNumber == account.accNumber);
+                console.log("Dear", chalk.green.italic(name?.firstName, name?.lastName), "your account balance is " +
+                    " " +
+                    chalk.bold.blueBright("$", account.balance));
+            }
         }
-    }
-    // Cash Deposit
-    if (service.select == "Cash Deposit") {
-        let res = await inquirer.prompt({
-            type: "input",
-            name: "num",
-            message: "Please enter your account number",
-        });
-        let account = myBank.account.find((acc) => acc.accNumber == res.num);
-        if (!account) {
-            console.log(chalk.red.bold.italic("Invalid Account Number"));
-        }
-        if (account) {
-            let ans = await inquirer.prompt({
-                type: "number",
-                message: "please enter your CASH",
-                name: "rupee",
+        // Cash Withdraw
+        if (service.select == "Cash Withdraw") {
+            let res = await inquirer.prompt({
+                type: "input",
+                name: "num",
+                message: "Please enter your account number",
             });
-            let newBalance = account.balance + ans.rupee;
-            // transcation method
-            bank.transcation({ accNumber: account.accNumber, balance: newBalance });
-            console.log(newBalance);
+            let account = myBank.account.find((acc) => acc.accNumber == res.num);
+            if (!account) {
+                console.log(chalk.red.bold.italic("Invalid Account Number"));
+            }
+            if (account) {
+                let ans = await inquirer.prompt({
+                    type: "number",
+                    message: "please enter your CASH",
+                    name: "rupee",
+                });
+                if (ans.rupee > account.balance) {
+                    console.log(chalk.red.bold.italic("mojoda balance naakafi hai"));
+                    return;
+                }
+                let newBalance = account.balance - ans.rupee;
+                // transcation method
+                bank.transcation({ accNumber: account.accNumber, balance: newBalance });
+                console.log(newBalance);
+            }
         }
-    }
+        // Cash Deposit
+        if (service.select == "Cash Deposit") {
+            let res = await inquirer.prompt({
+                type: "input",
+                name: "num",
+                message: "Please enter your account number",
+            });
+            let account = myBank.account.find((acc) => acc.accNumber == res.num);
+            if (!account) {
+                console.log(chalk.red.bold.italic("Invalid Account Number"));
+            }
+            if (account) {
+                let ans = await inquirer.prompt({
+                    type: "number",
+                    message: "please enter your CASH",
+                    name: "rupee",
+                });
+                let newBalance = account.balance + ans.rupee;
+                // transcation method
+                bank.transcation({ accNumber: account.accNumber, balance: newBalance });
+                console.log(newBalance);
+            }
+        }
+    } while (true);
 }
 bankService(myBank);

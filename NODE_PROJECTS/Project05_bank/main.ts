@@ -64,14 +64,18 @@ for (let index = 1; index <= 3; index++) {
   myBank.addCustomer(cus);
   myBank.addAccount({ accNumber: cus.accNumber, balance: 100 * index });
 }
+
+
 // bank functionality
 async function bankService(bank: Bank) {
+  do {
   let service = await inquirer.prompt({
     type: "list",
     name: "select",
     message: "please select the service",
     choices: ["View Balance", "Cash Withdraw", "Cash Deposit"],
   });
+ 
   // view balance
   if (service.select == "View Balance") {
     let res = await inquirer.prompt({
@@ -82,6 +86,7 @@ async function bankService(bank: Bank) {
     let account = myBank.account.find((acc) => acc.accNumber == res.num);
     if (!account) {
       console.log(chalk.red.bold.italic("Invalid Account Number"));
+    
     }
     if (account) {
       let name = myBank.customer.find(
@@ -94,6 +99,7 @@ async function bankService(bank: Bank) {
           " " +
           chalk.bold.blueBright("$", account.balance)
       );
+        
     }
   }
   // Cash Withdraw
@@ -146,5 +152,7 @@ async function bankService(bank: Bank) {
       console.log(newBalance);
     }
   }
+}while(true)
 }
 bankService(myBank);
+
